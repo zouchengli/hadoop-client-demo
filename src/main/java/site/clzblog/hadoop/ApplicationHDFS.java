@@ -17,8 +17,10 @@ public class ApplicationHDFS {
         //delete();
         //list();
         //listAll();
-        readFile();
-        randomReadFile();
+        //readFile("/test.txt");
+        //randomReadFile();
+        //writeFile();
+
     }
 
     private static Configuration getConf() {
@@ -110,10 +112,10 @@ public class ApplicationHDFS {
         fs.close();
     }
 
-    public static void readFile() throws Exception {
+    public static void readFile(String path) throws Exception {
         FileSystem fs = getFileSystem();
         if (fs == null) return;
-        FSDataInputStream in = fs.open(new Path("/anaconda-ks.cfg"));
+        FSDataInputStream in = fs.open(new Path(path));
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         String line;
         while ((line = reader.readLine()) != null) System.out.println(line);
@@ -132,6 +134,23 @@ public class ApplicationHDFS {
         System.out.println(read);
         System.out.println(new String(bytes));
         in.close();
+        fs.close();
+    }
+
+    public static void writeFile() throws Exception {
+        FileSystem fs = getFileSystem();
+        if (fs == null) return;
+        FSDataOutputStream out = fs.create(new Path("/test.txt"), true);
+        FSDataInputStream in = fs.open(new Path("/anaconda-ks.cfg"));
+        byte[] buffer = new byte[1024];
+        int read;
+        while ((read = in.read(buffer)) != -1) {
+            out.write(buffer, 0, read);
+            out.flush();
+        }
+        System.out.println("Write file successfully");
+        in.close();
+        out.close();
         fs.close();
     }
 }
