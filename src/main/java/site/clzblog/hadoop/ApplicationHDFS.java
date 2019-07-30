@@ -3,6 +3,8 @@ package site.clzblog.hadoop;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.*;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.Arrays;
 
@@ -15,6 +17,8 @@ public class ApplicationHDFS {
         //delete();
         //list();
         //listAll();
+        readFile();
+        randomReadFile();
     }
 
     private static Configuration getConf() {
@@ -44,7 +48,7 @@ public class ApplicationHDFS {
     public static void copyToLocalFile() throws Exception {
         FileSystem fs = getFileSystem();
         if (fs == null) return;
-        fs.copyToLocalFile(new Path("/jdk-8u181-linux-x64.tar.gz"), new Path("C:/Users/Administrator/Downloads/"));
+        fs.copyToLocalFile(new Path("/anaconda-ks.cfg"), new Path("C:/Users/Administrator/Downloads/"));
         System.out.println("Copy to local file successfully");
         fs.close();
     }
@@ -103,6 +107,31 @@ public class ApplicationHDFS {
             System.out.printf("Block replication:%s\n", fileStatus.getReplication());
             System.out.println("===========================================================");
         }
+        fs.close();
+    }
+
+    public static void readFile() throws Exception {
+        FileSystem fs = getFileSystem();
+        if (fs == null) return;
+        FSDataInputStream in = fs.open(new Path("/anaconda-ks.cfg"));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        String line;
+        while ((line = reader.readLine()) != null) System.out.println(line);
+        reader.close();
+        in.close();
+        fs.close();
+    }
+
+    public static void randomReadFile() throws Exception {
+        FileSystem fs = getFileSystem();
+        if (fs == null) return;
+        FSDataInputStream in = fs.open(new Path("/anaconda-ks.cfg"));
+        in.seek(14);
+        byte[] bytes = new byte[35];
+        int read = in.read(bytes);
+        System.out.println(read);
+        System.out.println(new String(bytes));
+        in.close();
         fs.close();
     }
 }
