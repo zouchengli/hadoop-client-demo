@@ -10,13 +10,15 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import site.clzblog.hadoop.mr.mapper.WordCountMapper;
 import site.clzblog.hadoop.mr.reducer.WordCountReducer;
 
-public class ApplicationMapReduceForHadoopNode {
+public class MapReduceForWindowsToLocal {
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
+        //conf.set("fs.defaultFS", "file:///");
+        //conf.set("mapreduce.framework.name", "local");
 
         Job job = Job.getInstance(conf);
 
-        job.setJarByClass(ApplicationMapReduceForHadoopNode.class);
+        job.setJarByClass(MapReduceForWindowsToLocal.class);
 
         job.setMapperClass(WordCountMapper.class);
         job.setReducerClass(WordCountReducer.class);
@@ -27,11 +29,11 @@ public class ApplicationMapReduceForHadoopNode {
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(IntWritable.class);
 
-        FileInputFormat.setInputPaths(job, new Path("/wordcount/input"));
+        FileInputFormat.setInputPaths(job, new Path("c:/wordcount/input"));
 
-        FileOutputFormat.setOutputPath(job, new Path("/wordcount/output"));
+        FileOutputFormat.setOutputPath(job, new Path("c:/wordcount/output"));
 
-        job.setNumReduceTasks(4);
+        job.setNumReduceTasks(3);
 
         boolean completion = job.waitForCompletion(true);
 
