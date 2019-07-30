@@ -1,4 +1,4 @@
-package site.clzblog.hadoop;
+package site.clzblog.hadoop.hdfs;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.*;
